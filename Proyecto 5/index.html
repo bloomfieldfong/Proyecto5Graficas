@@ -1,0 +1,165 @@
+	<html>
+	<head>
+	    <title>Michelle Bloomfield</title>
+	    <style>
+	        body{
+	            margin: 0;
+	            overflow: hidden;
+	        }
+	        #informacion{
+	            position: absolute;
+	            top: 0px;
+	            width: 100%;
+	            padding: 5px;
+	        }
+	        #ayuda {
+	            display: none;
+	        
+	            height: 80vh;
+	            width: 80vw;
+	            background-color: white;
+	        }
+	        .controles {
+	            float: left;
+	            height: inherit;
+	            width: 33%;
+	        
+	        canvas{
+	            background: white;
+	        }
+	    </style>
+	</head>
+	<body>
+
+	    <div id= "informacion"> Presionar la tecla 4 para desplegar ayuda </div>
+	    <div style="position: absolute; top: 0;left: 0; display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw;">
+	        <div id = "ayuda"> 
+	            <div class = "controles">
+	                <p>Controles para cambiar escenarios: </p>
+	               	<p>1: Playa</p>
+	               	<p>2: Montaña </p>
+	               	<p>3: Escuela </p>
+	            </div> 
+
+	            <div class = "controles">
+	                <p>Controles de camaras: </p>
+	                
+	            </div>
+
+	            <div class = "controles">
+	                <p>Controles para el barco</p>
+	                
+	            </div>
+	        </div>    
+	    </div>
+	    
+	    <canvas id="canvas"></canvas>
+	    
+
+ 	<script src="build/three.js"></script>
+    <script src="js/controls/OrbitControls.js"></script>
+    <script src="js/objects/Reflector.js"></script>
+    <script src="js/objects/Refractor.js"></script>
+    <script src="js/Detector.js"></script>
+    <script src="js/libs/dat.gui.min.js"></script>
+    <script src="js/loaders/MTLLoader.js"></script>	
+    <script src="js/loaders/LoaderSupport.js"></script>
+    <script src="js/loaders/OBJLoader2.js"></script>
+    <script src="physi.js"></script>
+	<script src="stats.js"></script>
+	    <script>
+
+				    var texturaSelecciona = 'texturas/grama3.jpg';
+				    var help = false;
+	 
+
+				//Creacion del render
+	                var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas'), antialias: true});
+	                renderer.setPixelRatio(window.devicePixelRatio);
+	                renderer.setSize(window.innerWidth, window.innerHeight);
+	                renderer.setClearColor(0xccf2ff);
+	                document.body.appendChild(renderer.domElement);
+
+	            //Creacion de la camara
+	                var camera1 = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 3000);
+	            
+	            //Creacion de la escena
+	                var scene = new Physijs.Scene();
+
+	            //Luces
+	                var light = new THREE.AmbientLight(0xffffff, 1);
+	                var light1 = new THREE.PointLight(0xffff80, 1);
+	                scene.add(light1);
+	                scene.add(light);
+	                light1.position.set(0,10,10);
+	                light.position.set(0,10,10);
+
+	                camera1.position.set(0,60,250);	        
+	                
+
+	                mixer = new THREE.AnimationMixer( scene );
+
+
+
+				   	var loader = new THREE.JSONLoader();
+					loader.load( 'Baile1/TIMMY3.json', function ( geometry, materials ) {
+						
+					} );
+
+
+		//PLANO
+
+
+					var planoGeometria = new THREE.PlaneGeometry(10000, 10000, 100, 100);
+	                var grama = new THREE.MeshBasicMaterial({
+	                    map: new THREE.TextureLoader().load(texturaSelecciona)
+	                });
+	                var plano = new THREE.Mesh(planoGeometria, grama);
+	                scene.add(plano);
+		
+	                document.addEventListener("keydown", onDocumentKeyDown, false);
+	                function onDocumentKeyDown(event) {
+	            
+	                    console.log(event.key)
+	                    switch(event.key){
+
+	                    
+							case '1':
+		                    	x = 1;
+		                    	break;
+		                
+		                    case '3':
+	                            if (help) {
+	                                document.getElementById('ayuda').style.display = 'none';
+	                                help = false;
+	                            } else {
+	                                document.getElementById('ayuda').style.display = 'block';
+	                                help = true;
+	                            }
+	                       		break; 
+	                    }
+	                
+	                };    
+	                      
+	      
+    
+
+	        var update = function(){
+
+	          		renderer.render(scene,camera1);  
+
+	        };
+
+
+	        var loop = function(){
+	            
+				scene.simulate();				
+	            requestAnimationFrame(loop);
+	            update();
+	        };
+
+	  loop();
+
+	    </script>
+	</body>
+	</html>
