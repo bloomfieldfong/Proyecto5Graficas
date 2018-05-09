@@ -83,18 +83,19 @@
  				
  		//Audio
  						var listener = new THREE.AudioListener();
-						camera.add( listener );
+						
+						var audioLoader = new THREE.AudioLoader();
 
-						var sound = new THREE.Audio( listener );
+						var audio = new THREE.Audio(listener);
+						
 
-							var audioLoader = new THREE.AudioLoader();
-							audioLoader.load( 'audio/song1.mp3', function( buffer ) {
-							sound.setBuffer( buffer );
-							sound.setLoop( true );
-							sound.setVolume(10 );
-							
-						});
-	 
+						audioLoader.load('audio/song1.mp3',function(buffer){
+							audio.setBuffer(buffer);
+							audio.setLoop(true);
+							audio.play();
+						})
+						
+
 	    //Luces
 	                var light = new THREE.AmbientLight(0xffffff, 1);
 	                var light1 = new THREE.PointLight(0xffff80, 1);
@@ -105,11 +106,6 @@
 
 	                camera.position.set(0,60,250);	        
 
-				 	var objectLoader = new THREE.ObjectLoader();
-				 	objectLoader.load('Baile1/TIMMY.json',function(amiguito){
-				 		amiguito.scale.set(25,25,25);
-				 		scene.add(amiguito);
-				 	});
 
 		//PLANO
 
