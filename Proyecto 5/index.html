@@ -31,18 +31,25 @@
 	</head>
 	<body>
 
-	    <div id= "informacion"> Presionar la tecla 4 para desplegar ayuda </div>
+
+
+	    <div id= "informacion"> Presionar la tecla 'H' para desplegar ayuda </div>
 	    <div style="position: absolute; top: 0;left: 0; display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw;">
 	        <div id = "ayuda"> 
 	            <div class = "controles">
 	                <p>Controles para cambiar escenarios: </p>
-	               	<p>1: Playa</p>
-	               	<p>2: Montaña </p>
-	               	<p>3: Selva </p>
+	               	<p>	6: Montaña</p>
+	               	<p>	7: Selva </p>
+	               	<p>	8: Playa </p>
 	            </div> 
 
 	            <div class = "controles">
-	                <p>Cambio de Personaje: </p>
+	                <p>Listado de Canciones: </p>
+	                <p>	1. Dancing Queen</p>
+	                <p>	2. Sola</p>
+	                <p>	3. Hikaru Nara</p>
+	                <p>	4. Im still Standing</p>
+	                <p>	5. Thats what i like it</p>
 	                
 	            </div>
 
@@ -64,7 +71,6 @@
 	<script src="stats.js"></script>
 	    <script>
 
-				    var texturaSelecciona = 'texturas/selva.jpg';
 				    var help = false;
 				   
 
@@ -80,21 +86,7 @@
 	            
 		//Creacion de la escena
 	                var scene = new THREE.Scene();
- 				
- 		//Audio
- 						var listener = new THREE.AudioListener();
-						
-						var audioLoader = new THREE.AudioLoader();
 
-						var audio = new THREE.Audio(listener);
-						
-
-						audioLoader.load('audio/song1.mp3',function(buffer){
-							audio.setBuffer(buffer);
-							audio.setLoop(true);
-							audio.play();
-						})
-						
 
 	    //Luces
 	                var light = new THREE.AmbientLight(0xffffff, 1);
@@ -108,22 +100,91 @@
 
 
 		//PLANO
-
-
-					var planoGeometria = new THREE.PlaneGeometry(350, 300, 100, 100);
-	                var grama = new THREE.MeshBasicMaterial({
-	                    map: new THREE.TextureLoader().load(texturaSelecciona)
+					
+		//Selva
+					var planoSelva = new THREE.PlaneGeometry(330, 160);
+	                var Selva = new THREE.MeshBasicMaterial({
+	                    map: new THREE.TextureLoader().load('texturas/selva.jpg')
 	                });
-	                var plano = new THREE.Mesh(planoGeometria, grama);
-	                scene.add(plano);
+	                var planoSelva = new THREE.Mesh(planoSelva,Selva);
+	                scene.add(planoSelva);
+	                planoSelva.position.y = 60;
 		
+		//Montaña
+					var planoMonta = new THREE.PlaneGeometry(330, 160);
+	                var monta = new THREE.MeshBasicMaterial({
+	                    map: new THREE.TextureLoader().load('texturas/mountain.jpg')
+	                });
+	                var planoMonta = new THREE.Mesh(planoMonta, monta);
+	                scene.add(planoMonta);
+	                 planoMonta.position.y = 60;
+
+	    //Playa
+	                var planoPlaya = new THREE.PlaneGeometry(330, 160);
+	                var playa = new THREE.MeshBasicMaterial({
+	                    map: new THREE.TextureLoader().load('texturas/playa.jpg')
+	                });
+	                var planoPlaya = new THREE.Mesh(planoPlaya, playa);
+	                scene.add(planoPlaya);
+	                planoPlaya.position.y = 60;
+
+	    //SongList
+
+	    			var planoSong = new THREE.PlaneGeometry(60, 30);
+	                var musica = new THREE.MeshBasicMaterial({
+	                    map: new THREE.TextureLoader().load('texturas/songList.jpg')
+	                });
+	                var planoMusica = new THREE.Mesh(planoSong, musica);
+	                scene.add(planoMusica);
+	                planoMusica.position.y = 110;
+	                planoMusica.position.x = 120
+
+
+ 							
+
+	                
 	                document.addEventListener("keydown", onDocumentKeyDown, false);
 	                function onDocumentKeyDown(event) {
+
+		                var context = new AudioContext();
+						var listener = new THREE.AudioListener();
+						var audioLoader = new THREE.AudioLoader();
+
+						var audio1 = new THREE.Audio(listener);
+						var audio2 = new THREE.Audio(listener);
+						var audio3 = new THREE.Audio(listener);
+						var audio4 = new THREE.Audio(listener);
+						var audio5 = new THREE.Audio(listener);
+
+						var analyser = new THREE.AudioAnalyser( audio1, 32 );
+	                    var data = analyser.getAverageFrequency();
+							
+
+								// get the average frequency of the sound
+
 	            
 	                    console.log(event.key)
 	                    switch(event.key){
 		                
-		                    case '4':
+		                	case '6':
+		                		planoSelva.position.x = 10000;
+		                		planoPlaya.position.x = 10000;
+		                		planoMonta.position.x = 3;
+		                		planoMonta.position.y = 60;
+		                		break;
+		                	case '7':
+		                		planoMonta.position.x = 10000;
+		                		planoPlaya.position.x = 10000;
+		                		planoSelva.position.x = 3;
+		                		planoSelva.position.y = 60;
+		                		break;
+		                	case '8':
+		                		planoMonta.position.x = 10000;
+		                		planoSelva.position.x = 10000;
+		                		planoPlaya.position.x = 3;
+		                		planoPlaya.position.y = 60;
+		                		break;
+		                    case 'h':
 	                            if (help) {
 	                                document.getElementById('ayuda').style.display = 'none';
 	                                help = false;
@@ -132,9 +193,50 @@
 	                                help = true;
 	                            }
 	                       		break; 
-	                       	case '5':
-	                       		sound.play();
-	                       		break;
+	                       	case '1':
+	                       		audioLoader.load('audio/song1.mp3',function(buffer){
+									audio1.setBuffer(buffer);
+									audio1.setLoop(false);
+									audio1.play();		
+
+								})
+
+	                       		
+						
+
+								break;
+							case '2':
+								audioLoader.load('audio/song2.mp3',function(buffer){
+									audio2.setBuffer(buffer);
+									audio2.setLoop(false);
+									audio2.play();					
+								})
+
+								break;
+							case '3':
+								audioLoader.load('audio/song3.mp3',function(buffer){
+									audio3.setBuffer(buffer);
+									audio3.setLoop(false);
+									audio3.play();					
+								})
+								break;
+							
+							case '4':
+								audioLoader.load('audio/song4.mp3',function(buffer){
+									audio4.setBuffer(buffer);
+									audio4.setLoop(false);
+									audio4.play();					
+								})
+								break;
+
+							case '5':
+								audioLoader.load('audio/song5.mp3',function(buffer){
+									audio5.setBuffer(buffer);
+									audio5.setLoop(false);
+									audio5.play();					
+								})
+								break;
+	                       
 	                    }
 	                
 	                };    
