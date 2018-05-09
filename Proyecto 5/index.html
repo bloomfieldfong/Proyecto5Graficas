@@ -1,0 +1,162 @@
+	<html>
+	<head>
+	    <title>Michelle Bloomfield</title>
+	    <style>
+	        body{
+	            margin: 0;
+	            overflow: hidden;
+	        }
+	        #informacion{
+	            position: absolute;
+	            top: 0px;
+	            width: 100%;
+	            padding: 5px;
+	        }
+	        #ayuda {
+	            display: none;
+	        
+	            height: 80vh;
+	            width: 80vw;
+	            background-color: white;
+	        }
+	        .controles {
+	            float: left;
+	            height: inherit;
+	            width: 33%;
+	        
+	        canvas{
+	            background: white;
+	        }
+	    </style>
+	</head>
+	<body>
+
+	    <div id= "informacion"> Presionar la tecla 4 para desplegar ayuda </div>
+	    <div style="position: absolute; top: 0;left: 0; display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw;">
+	        <div id = "ayuda"> 
+	            <div class = "controles">
+	                <p>Controles para cambiar escenarios: </p>
+	               	<p>1: Playa</p>
+	               	<p>2: Montaña </p>
+	               	<p>3: Selva </p>
+	            </div> 
+
+	            <div class = "controles">
+	                <p>Cambio de Personaje: </p>
+	                
+	            </div>
+
+	            <div class = "controles">
+	                <p>Cambio de Baile:</p>
+	                
+	            </div>
+	        </div>    
+	    </div>
+	    
+	    <canvas id="canvas"></canvas>
+	    
+
+ 	<script src="build/three.js"></script>
+    <script src="js/Detector.js"></script>
+    <script src="js/loaders/MTLLoader.js"></script>	
+    <script src="js/loaders/LoaderSupport.js"></script>
+    <script src="js/loaders/OBJLoader2.js"></script>
+    <script src="physi.js"></script>
+	<script src="stats.js"></script>
+	    <script>
+
+				    var texturaSelecciona = 'texturas/selva.jpg';
+				    var help = false;
+				   
+
+		//Creacion del render
+	                var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas'), antialias: true});
+	                renderer.setPixelRatio(window.devicePixelRatio);
+	                renderer.setSize(window.innerWidth, window.innerHeight);
+	                renderer.setClearColor(0xccf2ff);
+	                document.body.appendChild(renderer.domElement);
+
+	    //Creacion de la camara
+	                var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 3000);
+	            
+		//Creacion de la escena
+	                var scene = new Physijs.Scene();
+ 				
+ 		//Audio
+ 						var listener = new THREE.AudioListener();
+						camera.add( listener );
+
+						var sound = new THREE.Audio( listener );
+
+							var audioLoader = new THREE.AudioLoader();
+							audioLoader.load( 'audio/song1.mp3', function( buffer ) {
+							sound.setBuffer( buffer );
+							sound.setLoop( true );
+							sound.setVolume(10 );
+							
+						});
+	 
+	    //Luces
+	                var light = new THREE.AmbientLight(0xffffff, 1);
+	                var light1 = new THREE.PointLight(0xffff80, 1);
+	                scene.add(light1);
+	                scene.add(light);
+	                light1.position.set(0,10,10);
+	                light.position.set(0,10,10);
+
+	                camera.position.set(0,60,250);	        
+
+				 
+
+		//PLANO
+
+
+					var planoGeometria = new THREE.PlaneGeometry(350, 300, 100, 100);
+	                var grama = new THREE.MeshBasicMaterial({
+	                    map: new THREE.TextureLoader().load(texturaSelecciona)
+	                });
+	                var plano = new THREE.Mesh(planoGeometria, grama);
+	                scene.add(plano);
+		
+	                document.addEventListener("keydown", onDocumentKeyDown, false);
+	                function onDocumentKeyDown(event) {
+	            
+	                    console.log(event.key)
+	                    switch(event.key){
+		                
+		                    case '4':
+	                            if (help) {
+	                                document.getElementById('ayuda').style.display = 'none';
+	                                help = false;
+	                            } else {
+	                                document.getElementById('ayuda').style.display = 'block';
+	                                help = true;
+	                            }
+	                       		break; 
+	                       	case '5':
+	                       		sound.play();
+	                       		break;
+	                    }
+	                
+	                };    
+	                      
+	     
+	        var update = function(){
+
+	          		renderer.render(scene,camera);  
+
+	        };
+
+
+	        var loop = function(){
+	            
+				scene.simulate();				
+	            requestAnimationFrame(loop);
+	            update();
+	        };
+
+	  loop();
+
+	    </script>
+	</body>
+	</html>
