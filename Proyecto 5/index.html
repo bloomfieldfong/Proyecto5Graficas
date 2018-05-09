@@ -61,7 +61,6 @@
     <script src="js/loaders/MTLLoader.js"></script>	
     <script src="js/loaders/LoaderSupport.js"></script>
     <script src="js/loaders/OBJLoader2.js"></script>
-    <script src="physi.js"></script>
 	<script src="stats.js"></script>
 	    <script>
 
@@ -80,7 +79,7 @@
 	                var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 3000);
 	            
 		//Creacion de la escena
-	                var scene = new Physijs.Scene();
+	                var scene = new THREE.Scene();
  				
  		//Audio
  						var listener = new THREE.AudioListener();
@@ -106,7 +105,11 @@
 
 	                camera.position.set(0,60,250);	        
 
-				 
+				 	var objectLoader = new THREE.ObjectLoader();
+				 	objectLoader.load('Baile1/TIMMY.json',function(amiguito){
+				 		amiguito.scale.set(25,25,25);
+				 		scene.add(amiguito);
+				 	});
 
 		//PLANO
 
@@ -150,7 +153,7 @@
 
 	        var loop = function(){
 	            
-				scene.simulate();				
+								
 	            requestAnimationFrame(loop);
 	            update();
 	        };
