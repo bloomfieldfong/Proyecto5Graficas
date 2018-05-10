@@ -65,14 +65,18 @@
 
  	<script src="build/three.js"></script>
     <script src="js/Detector.js"></script>
-    <script src="js/loaders/MTLLoader.js"></script>	
-    <script src="js/loaders/LoaderSupport.js"></script>
-    <script src="js/loaders/OBJLoader2.js"></script>
 	<script src="stats.js"></script>
+	<script src="js/loaders/ColladaLoader.js"></script>
+	<script src="js/loaders/AssimpJSONLoader.js"></script>
+	<script src="js/loaders/LoaderSupport.js"></script>
+    <script src="js/loaders/OBJLoader2.js"></script>
+    <script src="js/loaders/FBXLoader.js"></script>
+
 	    <script>
 
 				    var help = false;
-				   
+				    var context, listener,audio1,audio2,audio3,audio4,audio5,audioLoader, data, analyser, uniforms, mixer, clock;
+	
 
 		//Creacion del render
 	                var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas'), antialias: true});
@@ -98,9 +102,7 @@
 
 	                camera.position.set(0,60,250);	        
 
-
-		//PLANO
-					
+		//PLANO			
 		//Selva
 					var planoSelva = new THREE.PlaneGeometry(330, 160);
 	                var Selva = new THREE.MeshBasicMaterial({
@@ -117,7 +119,8 @@
 	                });
 	                var planoMonta = new THREE.Mesh(planoMonta, monta);
 	                scene.add(planoMonta);
-	                 planoMonta.position.y = 60;
+	                planoMonta.position.y = 60;
+	                planoMonta.position.x = -5;
 
 	    //Playa
 	                var planoPlaya = new THREE.PlaneGeometry(330, 160);
@@ -127,6 +130,8 @@
 	                var planoPlaya = new THREE.Mesh(planoPlaya, playa);
 	                scene.add(planoPlaya);
 	                planoPlaya.position.y = 60;
+	                planoPlaya.position.x = -5;
+
 
 	    //SongList
 
@@ -140,48 +145,71 @@
 	                planoMusica.position.x = 120
 
 
- 							
+	                clock = new THREE.Clock();
+	                clock1 = new THREE.Clock();
+	  
+	    //ESFERA
+	    			var geometry = new THREE.SphereGeometry( 7, 29, 2);
+					var material = new THREE.MeshBasicMaterial( {color: 0xbf00ff} );
+					var sphere = new THREE.Mesh( geometry, material );
+					scene.add( sphere );
+					sphere.scale.set(4,4,4);
+					sphere.position.set(-80,50,10);
+
+		 //Upload Collada
+	    		var loader = new THREE.ColladaLoader();
+	    		loader.load('Baile1/TIMMY.dae', function(collada){
+
+	    			var animations = collada.animations;
+	    			var colladaOBJ = collada.scene;
+
+	    			mixer = new THREE.AnimationMixer( colladaOBJ );
+	    			var action  = mixer.clipAction(animations[0]).play();
+	    			scene.add(colladaOBJ);
+
+	    			colladaOBJ.scale.x = colladaOBJ.scale.y = colladaOBJ.scale.z = 15;
+	    			colladaOBJ.position.x = 0;
+	    			colladaOBJ.position.y = 30;
+	    			colladaOBJ.position.z = 0;
+	    		})
 
 	                
 	                document.addEventListener("keydown", onDocumentKeyDown, false);
 	                function onDocumentKeyDown(event) {
 
-		                var context = new AudioContext();
-						var listener = new THREE.AudioListener();
-						var audioLoader = new THREE.AudioLoader();
+		                context = new AudioContext();
+						listener = new THREE.AudioListener();
+						audioLoader = new THREE.AudioLoader();
 
-						var audio1 = new THREE.Audio(listener);
-						var audio2 = new THREE.Audio(listener);
-						var audio3 = new THREE.Audio(listener);
-						var audio4 = new THREE.Audio(listener);
-						var audio5 = new THREE.Audio(listener);
+						audio1 = new THREE.Audio(listener);
+						audio2 = new THREE.Audio(listener);
+						audio3 = new THREE.Audio(listener);
+						audio4 = new THREE.Audio(listener);
+						audio5 = new THREE.Audio(listener);
+						audio6 = new THREE.Audio(listener);
+						audio7 = new THREE.Audio(listener);
 
-						var analyser = new THREE.AudioAnalyser( audio1, 32 );
-	                    var data = analyser.getAverageFrequency();
-							
-
-								// get the average frequency of the sound
-
-	            
+						
+						
 	                    console.log(event.key)
 	                    switch(event.key){
 		                
 		                	case '6':
 		                		planoSelva.position.x = 10000;
 		                		planoPlaya.position.x = 10000;
-		                		planoMonta.position.x = 3;
+		                		planoMonta.position.x = -5;
 		                		planoMonta.position.y = 60;
 		                		break;
 		                	case '7':
 		                		planoMonta.position.x = 10000;
 		                		planoPlaya.position.x = 10000;
-		                		planoSelva.position.x = 3;
+		                		planoSelva.position.x = -5;
 		                		planoSelva.position.y = 60;
 		                		break;
 		                	case '8':
 		                		planoMonta.position.x = 10000;
 		                		planoSelva.position.x = 10000;
-		                		planoPlaya.position.x = 3;
+		                		planoPlaya.position.x = -5;
 		                		planoPlaya.position.y = 60;
 		                		break;
 		                    case 'h':
@@ -200,17 +228,17 @@
 									audio1.play();		
 
 								})
-
-	                       		
-						
+								analyser = new THREE.AudioAnalyser( audio1, 32 );
 
 								break;
 							case '2':
 								audioLoader.load('audio/song2.mp3',function(buffer){
 									audio2.setBuffer(buffer);
 									audio2.setLoop(false);
-									audio2.play();					
+									audio2.play();	
+													
 								})
+								analyser = new THREE.AudioAnalyser( audio2, 32 );
 
 								break;
 							case '3':
@@ -219,6 +247,8 @@
 									audio3.setLoop(false);
 									audio3.play();					
 								})
+
+								analyser = new THREE.AudioAnalyser( audio3, 32 );
 								break;
 							
 							case '4':
@@ -227,6 +257,7 @@
 									audio4.setLoop(false);
 									audio4.play();					
 								})
+								analyser = new THREE.AudioAnalyser( audio4, 32 );
 								break;
 
 							case '5':
@@ -235,23 +266,48 @@
 									audio5.setLoop(false);
 									audio5.play();					
 								})
+								analyser = new THREE.AudioAnalyser( audio5, 32 );
 								break;
-	                       
+
+
+							case 'a':
+								audioLoader.load('audio/song6.mp3',function(buffer){
+									audio4.setBuffer(buffer);
+									audio4.setLoop(false);
+									audio4.play();					
+								})
+								analyser = new THREE.AudioAnalyser( audio6, 32 );
+								break;
+
+							case 's':
+								audioLoader.load('audio/song7.mp3',function(buffer){
+									audio5.setBuffer(buffer);
+									audio5.setLoop(false);
+									audio5.play();					
+								})
+								analyser = new THREE.AudioAnalyser( audio5, 32 );
+								break;
+
+
+							
 	                    }
 	                
-	                };    
-	                      
+	                };        
 	     
 	        var update = function(){
 
 	          		renderer.render(scene,camera);  
+	          		data = analyser.getAverageFrequency();
+	          		console.log(data)
+
+	          		sphere.rotation.y = sphere.rotation.y  + data/500;
+	          		sphere.rotation.x = sphere.rotation.x  + data/500;
+
 
 	        };
 
 
-	        var loop = function(){
-	            
-								
+	        var loop = function(){			
 	            requestAnimationFrame(loop);
 	            update();
 	        };
