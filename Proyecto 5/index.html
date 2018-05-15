@@ -60,9 +60,7 @@
 	        </div>    
 	    </div>
 	    
-	    <canvas id="canvas"></canvas>
-	    
-
+		<canvas id="canvas"></canvas>
  	<script src="build/three.js"></script>
     <script src="js/Detector.js"></script>
 	<script src="stats.js"></script>
@@ -72,7 +70,7 @@
     <script src="js/loaders/OBJLoader2.js"></script>
     <script src="js/loaders/FBXLoader.js"></script>
 
-	    <script>
+	<script>
 
 				    var help = false;
 				    var context, listener,audio1,audio2,audio3,audio4,audio5,audioLoader, data, analyser, uniforms, mixer, clock;
@@ -269,29 +267,7 @@
 								analyser = new THREE.AudioAnalyser( audio5, 32 );
 								break;
 
-
-							case 'a':
-								audioLoader.load('audio/song6.mp3',function(buffer){
-									audio4.setBuffer(buffer);
-									audio4.setLoop(false);
-									audio4.play();					
-								})
-								analyser = new THREE.AudioAnalyser( audio6, 32 );
-								break;
-
-							case 's':
-								audioLoader.load('audio/song7.mp3',function(buffer){
-									audio5.setBuffer(buffer);
-									audio5.setLoop(false);
-									audio5.play();					
-								})
-								analyser = new THREE.AudioAnalyser( audio5, 32 );
-								break;
-
-
-							
-	                    }
-	                
+	                    }	                
 	                };        
 	     
 	        var update = function(){
@@ -300,8 +276,8 @@
 	          		data = analyser.getAverageFrequency();
 	          		console.log(data)
 
-	          		sphere.rotation.y = sphere.rotation.y  + data/500;
-	          		sphere.rotation.x = sphere.rotation.x  + data/500;
+	          		sphere.rotation.y = sphere.rotation.y  + data/550;
+	          		sphere.rotation.x = sphere.rotation.x  + data/550;
 
 
 	        };
